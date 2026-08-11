@@ -6,13 +6,21 @@ DB_PATH = "data/school.db"
 
 
 def get_connection():
-    os.makedirs("data", exist_ok=True)
-    return sqlite3.connect(DB_PATH)
+
+    os.makedirs(
+        "data",
+        exist_ok=True
+    )
+
+    return sqlite3.connect(
+        DB_PATH
+    )
 
 
 def create_database():
 
     conn = get_connection()
+
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -27,6 +35,7 @@ def create_database():
     """)
 
     conn.commit()
+
     conn.close()
 
 
@@ -39,11 +48,18 @@ def add_question(
 ):
 
     conn = get_connection()
+
     cursor = conn.cursor()
 
     cursor.execute("""
         INSERT INTO questions
-        (subject, question_bn, question_en, answer_bn, answer_en)
+        (
+            subject,
+            question_bn,
+            question_en,
+            answer_bn,
+            answer_en
+        )
         VALUES (?, ?, ?, ?, ?)
     """, (
         subject,
@@ -54,12 +70,17 @@ def add_question(
     ))
 
     conn.commit()
+
     conn.close()
 
 
-def search_question(subject, question):
+def search_question(
+    subject,
+    question
+):
 
     conn = get_connection()
+
     cursor = conn.cursor()
 
     question = question.lower().strip()
@@ -80,10 +101,19 @@ def search_question(subject, question):
 
     for row in results:
 
-        question_bn = (row[0] or "").lower()
-        question_en = (row[1] or "").lower()
+        question_bn = (
+            row[0] or ""
+        ).lower().strip()
 
-        if question == question_bn or question == question_en:
+        question_en = (
+            row[1] or ""
+        ).lower().strip()
+
+        if (
+            question == question_bn
+            or
+            question == question_en
+        ):
 
             return {
                 "question_bn": row[0],
